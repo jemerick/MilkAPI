@@ -1,0 +1,18 @@
+{% for param in required %}
+    <tr class="parameters">
+        <td class="label"><label for="{{ param }}">{{ param }}</label></td>
+        <td class="field"><input type="text" id="{{ param }}" name="{{ param }}" class="textfield" /></td>
+        <td class="status required">
+            * required
+            {% if param == 'timeline' %}<a href="javascript:getTimeline()">get timeline</a>{% end %}
+        </td>
+    </tr>
+{% end %}
+
+{% for param in optional %}
+    <tr class="parameters">
+        <td class="label"><label for="{{ param }}">{{ param }}</label></td>
+        <td class="field"><input type="text" id="{{ param }}" name="{{ param }}" class="textfield" /></td>
+        <td class="status"></td>
+    </tr>
+{% end %}

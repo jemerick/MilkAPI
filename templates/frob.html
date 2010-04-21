@@ -1,0 +1,34 @@
+{% extends "base.html"%}
+
+{% block banner %}Authentication / Frob{% end %}
+
+{% block body %}
+<ol>
+    <li>Sort your parameters by key name, so that:
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(params) }}">{% for key, value in params.iteritems() %}{% if key != "api_sig" %}{{ key }}={{ value }}
+    	    {% end %}{% end %}</textarea>
+    	becomes:
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(params)  }}">{% for value in sorted_params %}{{ value }}
+{% end %}</textarea>
+    </li>
+    <li>Construct a string with all key/value pairs concatenated together: 
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(concat_params) / 50 }}">{{ concat_params }}</textarea>
+    </li>
+    <li>Concatenate the previous result onto your shared secret:  
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(secret_params) / 50 }}">{{ secret_params}}</textarea>
+    </li>
+    <li>Calculate the MD5 hash of this string: 
+    	<textarea readonly="true" class="boxhighlight">{{ api_sig }}</textarea>
+    </li>
+    <li>Create the URL: 
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(url) / 50 }}">{{ url }}</textarea>
+    </li>
+    <li>Get the response: 
+    	<textarea readonly="true" class="boxhighlight" rows="{{ len(escape(response)) / 75 }}">{{ escape(response) }}</textarea>
+    </li>
+</ol>
+
+<p> </p>
+
+<p>After obtaining the frob, you will want to <a href="/auth/url/">create the authentication url</a>.</p>
+{% end %}

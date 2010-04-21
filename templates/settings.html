@@ -1,0 +1,55 @@
+{% extends base.html %}
+
+{% block banner %}Settings{% end %}
+
+{% block body %}
+
+{% if message %}
+    <p>{{ message }}</p>
+{% end %}
+
+<form action="/settings/" method="POST" accept-charset="utf-8">    
+    <table>
+    	<tr>
+    		<td class="label"><label for="key">API key</label></td>
+    		<td class="field"><input id="key" type="text" name="key" value="{% if key %}{{ key }}{% end %}" class="textfield" /></td>
+    		<td class="status required">* requried</td>
+    	</tr>
+    	<tr>
+    		<td class="label"><label for="secret">API secret</label></td>
+    		<td class="field"><input id="secret" type="text" name="secret" value="{% if secret %}{{ secret }}{% end %}" class="textfield" /></td>
+    		<td class="status required">* requried</td>
+    	</tr>
+    	<tr>
+    		<td class="label"><label for="perms">Permission</label></td>
+    		<td class="field">
+        		<select id="perms" name="perms" on>
+        		    <option {% if perms == "read" %}selected{% end %}>read</option>
+                    <option {% if perms == "write" %}selected{% end %}>write</option>
+                    <option {% if perms == "delete" or not perms %}selected{% end %}>delete</option>
+        		</select>
+    		</td>
+    		<td class="status"></td>
+    	</tr>
+    	<tr>
+    		<td class="label"><label for="format">Response format</label></td>
+    		<td class="field">
+    			<select id="format" name="format">
+                    <option {% if format == "json" %}selected{% end %}>json</option>
+                    <option {% if format == "xml" %}selected{% end %}>xml</option>
+                </select>
+    		</td>
+    		<td class="status"></td>
+    	</tr>
+    	<tr>
+    		<td class="label"></td>
+    		<td colspan="2" class="field"><input type="submit" value="Submit"/></td>
+    	</tr>
+    </table>    
+</form>
+
+<p>After updating any settings, you will want to complete the <a href="/auth/">authentication process</a> again to update your auth token.</p>
+
+<p>Click <a href="/auth/clear/">here</a> to clear your settings and your auth token if any.</p>
+    
+{% end %}

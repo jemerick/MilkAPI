@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script type="text/javascript">
+        function getMethodParameters()
+        {
+            method = $("#method")[0].value;
+            if(method != "")
+            {
+                data  = {"method": method };
+                
+                $.post("/methods/parameters/", data,
+                  function(data){
+                      $(".parameters").remove()
+                    $("#submit").before(data)
+                  }, "html");
+            
+                link = "https://www.rememberthemilk.com/services/api/methods/" + method + ".rtm";
+                $("a#documentation").show()[0].href = link;
+            }
+            else
+            {
+                $("a#documentation").hide();
+                $("#parameters").hide();
+                
+            }
+        }
+        
+        function getTimeline()
+        {
+            $.get('/timeline/current/', function(data){
+               $('#timeline')[0].value = data; 
+            });
+        }
+        
+        $(document).ready(function() { 
+                    // bind 'myForm' and provide a simple callback function 
+                    $('#methodform').submit(function() { 
+                        // submit the form 
+                        $(this).ajaxSubmit({success: function(data){
+                            $("#response").html(data);
+                        }}); 
+                        // return false to prevent normal browser submit and page navigation 
+                        return false; 
+                    });
+                });
+        
+    </script>
+{% end %}
+
+{% block banner %}API Methods{% end %}
+
+{% block body %}
+   
+   <form id="methodform" action="/methods/response/" method="POST">
+    <table>
+        <tr>
+           <td class="label"><label for="method">Method</label></td>
+           <td class="field">
+               <select id="method" name="method" onchange="getMethodParameters()">
+                   <option value="">Select a method</option>
+                   {% for method in methods %}
+                       <option>{{ method }}</option>
+                   {% end %}
+               </select>
+            </td>
+            <td class="status"><a href="#" id="documentation" style="display: none;">RTM documentation</a></td>
+       </p>
+       <div id="parameters"></div>
+       <tr id="submit">
+   		<td class="label"></td>
+   		<td colspan="2" class="field"><input type="submit" value="Submit"/></td>
+   	</tr>
+   	</table>
+   </form> 
+
+    <div id="response"></div>
+
+    
+{% end %}

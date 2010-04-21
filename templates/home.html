@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<p>Welcome to Milk API! Milk API provides you with a simple way to interact with the <a href="http://www.rememberthemilk.com">Remember the Milk</a> <a href="https://www.rememberthemilk.com/services/api/">API</a>.  Milk API walks you through creating the API request URL as well as displays the response.  A sample response is below. To get started, just enter your information in the <a href="/settings/">settings</a>, then <a href="/auth/">authenticate</a> Milk API, and finally play around with some of the <a href="/methods/">API methods</a>.</p>
+
+<hr/>
+
+<ol>
+<li>Sort your parameters by key name, so that:
+<textarea readonly="true" class="boxhighlight" rows="7">api_key=6e0567a610776a05381786e185eca4aa
+bar=Milk API
+format=json
+auth_token=01cf0e13b4d47f7f2a0b952768b5002236c82c3d
+foo=welcome to
+method=rtm.test.echo
+</textarea>
+becomes:
+<textarea readonly="true" class="boxhighlight" rows="7">api_key=6e0567a610776a05381786e185eca4aa
+auth_token=01cf0e13b4d47f7f2a0b952768b5002236c82c3d
+bar=Milk API
+foo=welcome to
+format=json
+method=rtm.test.echo
+</textarea>
+</li>
+<li>Construct a string with all key/value pairs concatenated together:
+<textarea readonly="true" class="boxhighlight" rows="2">api_key6e0567a610776a05381786e185eca4aaauth_token01cf0e13b4d47f7f2a0b952768b5002236c82c3dbarMilk APIfoowelcome toformatjsonmethodrtm.test.echo</textarea>
+</li>
+<li>Concatenate the previous result onto your shared secret:
+<textarea readonly="true" class="boxhighlight" rows="3">d743a619dbea1853api_key6e0567a610776a05381786e185eca4aaauth_token01cf0e13b4d47f7f2a0b952768b5002236c82c3dbarMilk APIfoowelcome toformatjsonmethodrtm.test.echo</textarea>
+</li>
+<li>Calculate the MD5 hash of this string:
+<textarea readonly="true" class="boxhighlight">9cf5a2eda4a4e0bc56d496b6396f7d0e</textarea>
+</li>
+<li>Create the URL:
+<textarea readonly="true" class="boxhighlight" rows="4">http://api.rememberthemilk.com/services/rest/?api_key=6e0567a610776a05381786e185eca4aa&bar=Milk+API&format=json&auth_token=01cf0e13b4d47f7f2a0b952768b5002236c82c3d&api_sig=9cf5a2eda4a4e0bc56d496b6396f7d0e&foo=welcome+to&method=rtm.test.echo</textarea>
+</li>
+<li>Get the response:
+<textarea readonly="true" class="boxhighlight" rows="3">{"rsp":{"stat":"ok","api_key":"6e0567a610776a05381786e185eca4aa","auth_token":"01cf0e13b4d47f7f2a0b952768b5002236c82c3d","bar":"Milk API","foo":"welcome to","format":"json","method":"rtm.test.echo"}}</textarea>
+</li>
+</ol>
+
+{% end %}

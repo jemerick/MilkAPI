@@ -1,0 +1,148 @@
+body, input, select, textarea {
+	font-family: arial,helvetica,sans-serif;
+	font-size: 12px;
+}
+
+body {
+	color: #333;
+}
+
+h1 {
+	font-size: 2em;
+	margin: 0 0 0.4em;
+}
+
+p {
+    margin: 0 0 1em;
+    font-size: 1.2em;
+}
+
+.content {
+	margin: 0 auto;
+	width: 765px;
+}
+
+.center {
+	text-align: center;
+}
+
+#header #logo {
+	float: left;
+}
+
+#header #nav {
+	padding: 30px 0 15px 0;
+	color: #005CB8;
+	font-size: 1.2em;
+}
+
+#header #nav a {
+	text-decoration: none;
+}
+
+#header #nav a:visited {
+	color: #005CB8;
+}
+
+#header #nav a:hover {
+	text-decoration: underline;
+}
+
+
+
+#header ul {
+	display: inline;
+	padding-left: 30px;
+}
+
+#header li {
+	display: inline;
+	font-size: 1.3em;
+	font-weight: bold;
+	color: #A7A7A7;
+	padding-left: 32px;
+}
+
+#banner {
+	background-color: #005CB8;
+	padding: 10px 0;
+	clear: both;
+}
+
+#banner h1 {
+	color: #fff;
+	font-size: 1.7em;
+	margin: 0;
+}
+
+#content {
+	padding-top: 20px;
+}
+
+label {
+	font-weight: bold;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	empty-cells: show;
+}
+
+table .label {
+	padding-right: 8px;
+	padding-top: 2px;
+	text-align: right;
+	white-space: nowrap;
+	width: 125px;
+}
+
+.textfield {
+	width: 230px;
+}
+
+table .field {
+	padding-bottom: 10px;
+	white-space: nowrap;
+}
+
+table .status {
+	padding-left: 5px;
+	padding-top: 2px;
+	white-space: nowrap;
+	width: 100px;	
+}
+
+.required {
+	color: red;
+}
+
+ol {
+	list-style-type: decimal;
+}
+
+ol li {
+    margin: 1em 0;
+    font-size: 1.2em;
+}
+
+pre {
+	font-family: monospace;
+	font-size: 1em;
+	margin: 8px 0;
+}
+
+.boxhighlight {
+	background-color: #E8EEF7;
+	border: 1px solid #CACACA;
+	padding: 5px;
+	width: 100%;
+	font-family: monospace;
+	font-size: 12px;
+}
+
+#footer {
+	margin: 20px 0;
+	line-height: 2em;
+	border-top: 1px solid #005CB8;
+}
