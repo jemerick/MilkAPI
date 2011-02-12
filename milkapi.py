@@ -27,6 +27,15 @@ from urllib import urlencode
 from xml.dom import minidom
 import functools
 import simplejson
+import xml.dom.minidom
+
+from pygments import highlight
+from pygments.lexers import JavascriptLexer, XmlLexer
+from pygments.formatters import HtmlFormatter
+
+javascript_lexer = JavascriptLexer()
+xml_lexer = XmlLexer()
+html_formatter = HtmlFormatter()
 
 from tornado.options import define, options
 
@@ -215,9 +224,11 @@ class FrobHandler(BaseHandler):
         if self.get_response_format() == 'xml':
             dom = minidom.parseString(response.body)
             frob = dom.getElementsByTagName('rsp')[0].getElementsByTagName('frob')[0].childNodes[0].data
+            api_response = pretty_print_xml(response.body) 
         else:
             json = tornado.escape.json_decode(response.body)
             frob = json['rsp']['frob']
+            api_response = pretty_print_json(response.body) 
         
         if frob:
             self.set_secure_cookie('frob', frob)
@@ -226,7 +237,7 @@ class FrobHandler(BaseHandler):
         
         self.render('frob.html', params=self.params, sorted_params=self.sorted_params, 
             concat_params=self.concat_params, secret_params=self.secret_params, api_sig=self.api_sig,
-            url=self.url, response=response.body)
+            url=self.url, response=api_response)
         
 class AuthURLHandler(BaseHandler):
     @api_key
@@ -267,24 +278,24 @@ class AuthTokenHandler(BaseHandler):
         
         token = None
         
-        print response.body
-        
         if self.get_response_format() == 'xml':
             dom = minidom.parseString(response.body)
             elements = dom.getElementsByTagName('rsp')[0].getElementsByTagName('auth')
             if len(elements) > 0:
                 token = elements[0].getElementsByTagName('token')[0].childNodes[0].data
+            api_response = pretty_print_xml(response.body) 
         else:
             json = tornado.escape.json_decode(response.body)
             if 'auth' in json['rsp']:
                 token = json['rsp']['auth']['token']
+            api_response = pretty_print_json(response.body)
         
         if token:
             self.set_secure_cookie('token', token)
         
         self.render('token.html', params=self.params, sorted_params=self.sorted_params, 
             concat_params=self.concat_params, secret_params=self.secret_params, api_sig=self.api_sig,
-            url=self.url, response=response.body)
+            url=self.url, response=api_response)
 
 class TimelineHandler(BaseHandler):
     @api_key
@@ -362,11 +373,24 @@ class MethodResponseHandler(BaseHandler):
     
     def on_response(self, response):     
         
+        if self.get_response_format() == 'json':
+            api_response = pretty_print_json(response.body)
+        else:
+            api_response = pretty_print_xml(response.body)            
+        
         self.render('response.html', params=self.params, sorted_params=self.sorted_params, 
             concat_params=self.concat_params, secret_params=self.secret_params, api_sig=self.api_sig,
-            url=self.url, response=response.body)
-        
-            
+            url=self.url, response=api_response)
+
+def pretty_print_json(body):
+    obj = simplejson.loads(body)
+    formatted = simplejson.dumps(obj, sort_keys=True, indent=4)
+    return highlight(formatted, javascript_lexer, html_formatter)
+
+def pretty_print_xml(body):
+    body = xml.dom.minidom.parseString(body)
+    formatted = body.toprettyxml()
+    return highlight(formatted, xml_lexer, html_formatter)
 
 class MethodParametersHandler(BaseHandler):
     @api_key
