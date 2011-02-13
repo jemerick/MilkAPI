@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block banner %}Authentication / Token{% end %}
+
+{% block body %}
+   
+    <form id="methodform" action="/auth/web/callback/token/" method="POST">
+        <table>
+            <tr>
+                <td class="label"><label for="method">Frob</label></td>
+                <td class="field">
+                    <input type="text" name="frob" value="" id="frob"/>
+                </td>
+            </tr>
+            <tr id="submit">
+   		        <td class="label"></td>
+   		        <td class="field"><input type="submit" value="Submit"/></td>
+   	        </tr>
+   	    </table>
+    </form> 
+    
+{% end %}

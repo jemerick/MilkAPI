@@ -125,6 +125,8 @@ class Application(tornado.web.Application):
             (r"/", HomeHandler),
             (r"/settings/", SettingsHandler),
             (r"/auth/", AuthHandler),
+            (r"/auth/web/callback/frob/", WebCallbackFrobHandler),
+            (r"/auth/web/callback/token/", WebCallbackTokenHandler),
             (r"/auth/frob/", FrobHandler),
             (r"/auth/url/", AuthURLHandler),
             (r"/auth/token/", AuthTokenHandler),
@@ -238,6 +240,67 @@ class FrobHandler(BaseHandler):
         self.render('frob.html', params=self.params, sorted_params=self.sorted_params, 
             concat_params=self.concat_params, secret_params=self.secret_params, api_sig=self.api_sig,
             url=self.url, response=api_response)
+            
+class WebCallbackFrobHandler(BaseHandler):
+    @api_key
+    def get(self):
+        params = {'api_key': self.get_api_key(), 'perms': self.get_permission()}
+        sorted_params = ["%s=%s" % (k,v) for k,v in sortedItems(params)]
+        concat_params = ''.join(["%s%s" % (k,v) for k,v in sortedItems(params)])
+        secret_params = '%s%s' % (self.get_api_secret(), concat_params)
+        api_sig = md5(secret_params).hexdigest()
+        params['api_sig'] = api_sig
+        self.require_setting("auth_service_url", "RTM API Authentication Service URL")
+        url = '%s?%s' % (self.application.settings['auth_service_url'], urlencode(params))
+        
+        self.render('web_callback_frob.html', params=params, sorted_params=sorted_params, 
+            concat_params=concat_params, secret_params=secret_params, api_sig=api_sig,
+            url=url)
+            
+class WebCallbackTokenHandler(BaseHandler):
+    @api_key
+    def get(self):
+        self.render('web_callback_token_form.html')
+    
+    @api_key
+    @tornado.web.asynchronous
+    def post(self):
+        frob = self.get_argument("frob")
+        
+        self.params = {'method': 'rtm.auth.getToken', 'format': self.get_response_format(), 'api_key':self.get_api_key(), 'frob': frob }
+        self.sorted_params = ["%s=%s" % (k,v) for k,v in sortedItems(self.params)]
+        self.concat_params = ''.join(["%s%s" % (k,v) for k,v in sortedItems(self.params)])
+        self.secret_params = '%s%s' % (self.get_api_secret(), self.concat_params)
+        self.api_sig = md5(self.secret_params).hexdigest()
+        self.params['api_sig'] = self.api_sig
+        self.require_setting("service_url", "RTM API Service URL")
+        self.url = '%s?%s' % (self.application.settings['service_url'], urlencode(self.params))
+        
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(self.url, callback=self.async_callback(self.on_response))
+    
+    def on_response(self, response):
+        
+        token = None
+        
+        if self.get_response_format() == 'xml':
+            dom = minidom.parseString(response.body)
+            elements = dom.getElementsByTagName('rsp')[0].getElementsByTagName('auth')
+            if len(elements) > 0:
+                token = elements[0].getElementsByTagName('token')[0].childNodes[0].data
+            api_response = pretty_print_xml(response.body) 
+        else:
+            json = tornado.escape.json_decode(response.body)
+            if 'auth' in json['rsp']:
+                token = json['rsp']['auth']['token']
+            api_response = pretty_print_json(response.body)
+        
+        if token:
+            self.set_secure_cookie('token', token)
+        
+        self.render('web_callback_token_response.html', params=self.params, sorted_params=self.sorted_params, 
+            concat_params=self.concat_params, secret_params=self.secret_params, api_sig=self.api_sig,
+            url=self.url, response=api_response)
         
 class AuthURLHandler(BaseHandler):
     @api_key
@@ -274,7 +337,6 @@ class AuthTokenHandler(BaseHandler):
         http.fetch(self.url, callback=self.async_callback(self.on_response))
     
     def on_response(self, response):
-        #if response.error: raise tornado.web.HTTPError(500)
         
         token = None
         

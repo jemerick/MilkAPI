@@ -3,7 +3,11 @@
 {% block banner %}Authentication{% end %}
 
 {% block body %}
-    <p>Welcome to the RTM API authentication process.  This process will walk you through the user authentication process for desktop applications.</p>
+    <p>Welcome to the RTM API authentication process.</p>
     
-    <p>To begin the process, <a href="/auth/frob/">get your frob</a>.</p>
+    <p>There are two authentication workflows, one for web-based applications and one for desktop or mobile applications.</p>
+    
+    <p>To begin the desktop or mobile application authentication process, begin by <a href="/auth/frob/">getting your frob</a>.</p>
+    
+    <p>To being the web-based application authentication process, begin by <a href="/auth/web/callback/frob/">creating the authentication url</a>.</p>
 {% end %}
