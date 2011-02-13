@@ -3,6 +3,8 @@
 {% block banner %}Authentication / Token{% end %}
 
 {% block body %}
+    
+    <p>Please enter the frob you received via your callback URL and submit it to get your authentication token.</p>
    
     <form id="methodform" action="/auth/web/callback/token/" method="POST">
         <table>
