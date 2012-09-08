@@ -1,0 +1,5 @@
+Pygments==1.5
+distribute==0.6.28
+simplejson==2.6.1
+tornado==2.4
+wsgiref==0.1.2
